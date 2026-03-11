@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tattoo Booking</title>
+    <link rel="stylesheet" href="book-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="booking-wrapper">
+        <div class="form-container">
+            <header class="fade-in">
+                <h1>Book Your Ink</h1>
+                <p>Tell us your idea. Let's create art.</p>
+            </header>
+
+            <form action="success.html" >
+                
+                <div class="input-group slide-up delay-1">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="e.g. John Doe" required>
+                    <span class="bar"></span>
+                </div>
+
+                <div class="input-group slide-up delay-2">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="e.g. john@example.com" required>
+                    <span class="bar"></span>
+                </div>
+
+                <div class="input-group slide-up delay-3">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="e.g. +1 555-0199" required>
+                    <span class="bar"></span>
+                </div>
+
+                <div class="input-group slide-up delay-4">
+                    <label for="message">Your Concept / Message</label>
+                    <textarea id="message" name="message" rows="5" placeholder="Describe placement, size, and style..." required></textarea>
+                    <span class="bar"></span>
+                </div>
+
+                <button type="submit" class="btn-submit slide-up delay-5" onclick="window.location.href='success.html'">Submit Request</button>
+
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
