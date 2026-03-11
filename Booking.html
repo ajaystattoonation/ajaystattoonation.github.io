@@ -17,7 +17,11 @@
                 <p>Tell us your idea. Let's create art.</p>
             </header>
 
-            <form action="success.html" >
+            <form action="https://api.web3forms.com/submit" method="POST">
+                
+                <input type="hidden" name="access_key" value="09b33895-f4cb-47c6-b907-f167bb45b641">
+                
+                <input type="hidden" name="redirect" value="https://yourwebsite.com/success.html">
                 
                 <div class="input-group slide-up delay-1">
                     <label for="name">Full Name</label>
@@ -43,7 +47,7 @@
                     <span class="bar"></span>
                 </div>
 
-                <button type="submit" class="btn-submit slide-up delay-5" onclick="window.location.href='success.html'">Submit Request</button>
+                <button type="submit" class="btn-submit slide-up delay-5">Submit Request</button>
 
             </form>
         </div>
