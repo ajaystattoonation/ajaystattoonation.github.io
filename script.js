@@ -3,36 +3,50 @@ const gallerySection = document.querySelector('.gallery-section');
 const stickyParent = document.querySelector('.sticky-parent');
 const horizontalStrip = document.querySelector('.horizontal-strip');
 
-// 1. Calculate exact scroll height so there are NO black gaps
-function updateGalleryHeight() {
-    // Measure the exact width of all images combined
+function syncGallery() {
+    // 1. Calculate EXACT width of the image strip
     const stripWidth = horizontalStrip.scrollWidth;
-    // Calculate the distance needed to scroll to the end
-    const scrollDistance = stripWidth - window.innerWidth;
-    // Set the section height exactly to that distance
-    gallerySection.style.height = `${scrollDistance + window.innerHeight}px`;
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    
+    // 2. Calculate the maximum amount we can slide left without showing the black void
+    const maxSlide = stripWidth - windowWidth;
+    
+    // 3. Force the section height to perfectly match the slide duration
+    const totalHeight = maxSlide + windowHeight;
+    // The '!important' here forcefully overrides any CSS causing the gap
+    gallerySection.style.setProperty('height', `${totalHeight}px`, 'important');
+    
+    // Save maxSlide to a dataset so the scroll function can use it instantly
+    gallerySection.dataset.maxSlide = maxSlide;
 }
 
-// Run the math when page loads and if screen rotates
-window.addEventListener('load', updateGalleryHeight);
-window.addEventListener('resize', updateGalleryHeight);
+// Run on load. (We don't run this on 'resize' because mobile address bars jumping up and down breaks the math)
+window.addEventListener('load', syncGallery);
+// A backup timer just in case your large high-res images take an extra second to load
+setTimeout(syncGallery, 800); 
 
-// 2. The slide effect
 window.addEventListener('scroll', () => {
+    // Pull the exact locking distance we calculated above
+    const maxSlide = parseFloat(gallerySection.dataset.maxSlide) || (horizontalStrip.scrollWidth - window.innerWidth);
     const parentTop = gallerySection.getBoundingClientRect().top;
     
     if (parentTop <= 0) {
-        // Cap the movement so it stops EXACTLY on the last image
-        const maxTranslate = horizontalStrip.scrollWidth - window.innerWidth;
-        let scrollAmount = Math.min(Math.abs(parentTop), maxTranslate);
+        // Convert the downward scroll into the leftward slide
+        let slideAmount = Math.abs(parentTop);
         
-        horizontalStrip.style.transform = `translateX(-${scrollAmount}px)`;
+        // THE HARD LOCK: This physically stops the images from sliding off the screen into the black space
+        if (slideAmount >= maxSlide) {
+            slideAmount = maxSlide;
+        }
+        
+        horizontalStrip.style.transform = `translateX(-${slideAmount}px)`;
     } else {
         horizontalStrip.style.transform = `translateX(0px)`;
     }
 });
 
-// --- TEXT REVEAL ON SCROLL (Observer) ---
+// --- TEXT REVEAL ON SCROLL ---
 const observerOptions = { threshold: 0.2 };
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
