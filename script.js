@@ -1,47 +1,38 @@
 // --- HORIZONTAL SCROLL LOGIC ---
 const gallerySection = document.querySelector('.gallery-section');
-const stickyParent = document.querySelector('.sticky-parent');
 const horizontalStrip = document.querySelector('.horizontal-strip');
 
-function syncGallery() {
-    // 1. Calculate EXACT width of the image strip
-    const stripWidth = horizontalStrip.scrollWidth;
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
+function setupScroll() {
+    // 1. Find exactly how far we need to move the strip left
+    let moveAmount = horizontalStrip.scrollWidth - window.innerWidth;
     
-    // 2. Calculate the maximum amount we can slide left without showing the black void
-    const maxSlide = stripWidth - windowWidth;
-    
-    // 3. Force the section height to perfectly match the slide duration
-    const totalHeight = maxSlide + windowHeight;
-    // The '!important' here forcefully overrides any CSS causing the gap
-    gallerySection.style.setProperty('height', `${totalHeight}px`, 'important');
-    
-    // Save maxSlide to a dataset so the scroll function can use it instantly
-    gallerySection.dataset.maxSlide = maxSlide;
+    // 2. Make the section height equal to the screen height + the move amount. 
+    // This perfectly matches the scroll distance, destroying the black gap.
+    gallerySection.style.height = `${window.innerHeight + moveAmount}px`;
+    gallerySection.dataset.moveAmount = moveAmount;
 }
 
-// Run on load. (We don't run this on 'resize' because mobile address bars jumping up and down breaks the math)
-window.addEventListener('load', syncGallery);
-// A backup timer just in case your large high-res images take an extra second to load
-setTimeout(syncGallery, 800); 
+// Run immediately, and run again after 1 second to ensure images are fully loaded
+window.addEventListener('load', setupScroll);
+setTimeout(setupScroll, 500);
+setTimeout(setupScroll, 1500);
 
 window.addEventListener('scroll', () => {
-    // Pull the exact locking distance we calculated above
-    const maxSlide = parseFloat(gallerySection.dataset.maxSlide) || (horizontalStrip.scrollWidth - window.innerWidth);
-    const parentTop = gallerySection.getBoundingClientRect().top;
+    let offsetTop = gallerySection.getBoundingClientRect().top;
     
-    if (parentTop <= 0) {
-        // Convert the downward scroll into the leftward slide
-        let slideAmount = Math.abs(parentTop);
+    // If the section hits the top of the screen (it is sticking)
+    if (offsetTop <= 0) {
+        let scrolledDistance = Math.abs(offsetTop);
+        let maxMove = parseFloat(gallerySection.dataset.moveAmount);
         
-        // THE HARD LOCK: This physically stops the images from sliding off the screen into the black space
-        if (slideAmount >= maxSlide) {
-            slideAmount = maxSlide;
+        // HARD STOP: Do not let it slide past the last image
+        if (scrolledDistance > maxMove) {
+            scrolledDistance = maxMove;
         }
         
-        horizontalStrip.style.transform = `translateX(-${slideAmount}px)`;
+        horizontalStrip.style.transform = `translateX(-${scrolledDistance}px)`;
     } else {
+        // If we scroll back up past the section, reset it
         horizontalStrip.style.transform = `translateX(0px)`;
     }
 });
