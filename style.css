@@ -21,7 +21,9 @@ body {
 
 html{
 scroll-behavior:smooth;
+    will-change:auto;
 }
+
 
 img{
 width:100%;
