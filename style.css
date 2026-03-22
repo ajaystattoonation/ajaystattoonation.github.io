@@ -77,6 +77,26 @@ z-index:10;
     border-color: var(--red);
 }
 
+.try-on-btn {
+    display: block;        /* Forces it to start on a new line */
+    margin-left: auto;     /* Aligns it to the right (matching your book-btn) */
+    width: max-content;    /* Keeps the hit-box tight to the text */
+    margin-top: 8px;       /* Creates space between the two buttons */
+    
+    /* Styling */
+    text-decoration: none;
+    color: var(--text);
+    font-size: 0.75rem;    /* Slightly smaller than the 0.8rem of the book-btn */
+    opacity: 0.7;          /* Gives it a secondary look */
+    transition: 0.3s;
+}
+
+.try-on-btn:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+
 /* --- HERO SECTION --- */
 .hero {
     min-height: 100vh;
